@@ -1,0 +1,837 @@
+---
+header-includes:
+- \usepackage{longtable}
+- \usepackage[utf8]{inputenc}
+- \usepackage[spanish]{babel}\decimalpoint
+- \setlength{\parindent}{1.25cm}
+- \usepackage{amsmath}
+- \usepackage{xcolor}
+- \usepackage{cancel}
+- \usepackage{array}
+- \usepackage{float}
+- \usepackage{multirow}
+output:
+  pdf_document: 
+    number_sections: yes
+fontsize: 12pt
+papersize: letter
+geometry: margin = 1in
+language: "es"
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, fig.align = "center",
+                      fig.pos = "H")
+library(readxl)
+library(tidyverse)
+library(lubridate)
+library(kableExtra)
+library(knitr)
+library(ggplot2)
+library(magrittr)
+library(Hmisc)
+```
+
+```{=tex}
+\input{titlepage}
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+\thispagestyle{empty}
+\newpage
+```
+
+```{=tex}
+\pagestyle{myheadings}
+\setcounter{page}{4}
+```
+
+\section{Primer punto.}
+
+$$
+X_{t} =W_{t-2}+0.5W_{t-1}+2W_{t}+0.5W_{t+1}+W_{t+2}
+$$
+\noindent
+Donde los $W_{t}$ son independientes con $\textbf{E}[W_t]=0$ y varianza $\sigma^2_w=4.8$
+
+\noindent
+\textbf{a.} Encuentre la media y la varianza del proceso.
+
+
+\noindent
+\textbf{Media}
+
+$$
+\begin{aligned}
+\textbf{E}[X_t] &= \textbf{E}[W_{t-2}+0.5W_{t-1}+2W_{t}+0.5W_{t+1}+W_{t+2}]\\
+\textbf{E}[X_t] &= \textbf{E}[W_{t-2}]+0.5\textbf{E}[W_{t-1}]+2\textbf{E}[W_{t}]+0.5\textbf{E}[W_{t+1}]+\textbf{E}[W_{t+2}]\\
+\textbf{E}[X_t] &= 0+0.5(0)+2(0)+0.5(0)+0\\
+\textbf{E}[X_t] &= 0
+\end{aligned}
+$$
+
+\noindent
+\textbf{Varianza}
+
+
+$$
+\begin{aligned}
+\textbf{V}ar[X_t]&=\textbf{V}ar[W_{t-2}+0.5W_{t-1}+2W_{t}+0.5W_{t+1}+W_{t+2}]\\
+\textbf{V}ar[X_t]&=\textbf{V}ar[W_{t-2}]+\textbf{V}ar[0.5W_{t-1}]+\textbf{V}ar[2W_{t}]+\textbf{V}ar[0.5W_{t+1}]+\textbf{V}ar[W_{t+2}]\\
+\textbf{V}ar[X_t]&=\textbf{V}ar[W_{t-2}]+0.5^2\textbf{V}ar[W_{t-1}]+2^2\textbf{V}ar[W_{t}]+0.5^2\textbf{V}ar[W_{t+1}]+\textbf{V}ar[W_{t+2}]\\
+\textbf{V}ar[X_t]&=\sigma^2_w+0.25\sigma^2_w+4\sigma^2_w+0.25\sigma^2_w+\sigma^2_w\\
+\textbf{V}ar[X_t]&=6.5\sigma^2_w\\
+\textbf{V}ar[X_t]&=6.5(4.8)\\
+\textbf{V}ar[X_t]&=31.2\\
+\end{aligned}
+$$
+
+
+\noindent
+\textbf{b.}Encuentre y grafique las funciones ACF y PACF del proceso.
+
+
+\noindent
+\textbf{ACF}
+
+
+$$
+\begin{aligned}
+&\gamma(t,t-h)=Cov[X_{t}, X_{t-h}]\\
+&=Cov[W_{t-2}+0.5W_{t-1}+2W_{t}+0.5W_{t+1}+W_{t+2},W_{t-h-2}+0.5W_{t-h-1}+2W_{t-h}+0.5W_{t-h+1}+W_{t-h+2}]\\
+&=Cov[W_{t-2}, W_{t-h-2}]+0.5Cov[W_{t-2},W_{t-h-1}]+2Cov[W_{t-2},W_{t-h}]+0.5Cov[W_{t-2}, W_{t-h+1}]\\
+&+Cov[W_{t-2}, W_{t-h+2}]+0.5Cov[W_{t-1},W_{t-h-2}]+0.25Cov[W_{t-1}, W_{t-h-1}+Cov[W_{t-1}, W_{t-h}]\\
+&+0.25Cov[W_{t-1}, W_{t-h+1}]+Cov[W_{t-1}, W_{t-h+2}]+2Cov[W_{t}, W_{t-h-2}]+Cov[W_{t}, W_{t-h-1}]\\
+&+4Cov[W_{t}, W_{t-h}]+Cov[W_{t}, W_{t-h+1}]+2Cov[W_{t}, W_{t-h+2}]+0.5Cov[W_{t+1}, W_{t-h-2}]\\
+&+0.25Cov[W_{t+1}, W_{t-h-1}]+Cov[W_{t+1}, W_{t-h}]+0.25Cov[W_{t+1}, W_{t-h+1}]+0.5Cov[W_{t+1},W_{t-h+2}]\\
+&+Cov[W_{t+2}, W_{t-h-2}]+0.5Cov[W_{t+2}, W_{t-h-1}]+2Cov[W_{t+2}, W_{t-h}]+0.5Cov[W_{t+2}, W_{t-h+1}]\\
+&+Cov[W_{t+2}, W_{t-h+2}]]
+\end{aligned}
+$$
+
+\noindent
+Con h=1
+
+$$
+\begin{aligned}
+\gamma(t,t-1)&=0.5Cov[W_{t-2},W_{t-2}]+Cov[W_{t-1},W_{t-1}]+Cov[W_{t},W_{t}]+0.5Cov[W_{t+1},W_{t+1}]\\
+&=0.5\sigma^2+\sigma^2_w+\sigma^2_w+0.5\sigma^2_w = 3\sigma^2_w
+\end{aligned}
+$$
+
+\noindent
+Con h=2
+
+$$
+\begin{aligned}
+\gamma(t,t-2)&=2Cov[W_{t-2},W_{t-2}]+0.25Cov[W_{t-1},W_{t-1}]+2Cov[W_{t},W_{t}]\\
+&=2\sigma^2+0.25\sigma^2_w+2\sigma^2_w = 4.25\sigma^2_w
+\end{aligned}
+$$
+
+\noindent
+Con h=3
+
+$$
+\begin{aligned}
+\gamma(t,t-3)&=0.5Cov[W_{t-2},W_{t-2}]+0.25Cov[W_{t-1},W_{t-1}]\\
+&=0.5\sigma^2_w+\sigma^2_w = 1.5\sigma^2_w
+\end{aligned}
+$$
+
+\noindent
+Con h=4
+
+$$
+\begin{aligned}
+\gamma(t,t-4)&=Cov[W_{t-2},W_{t-2}]\\
+&=\sigma^2_w
+\end{aligned}
+$$
+
+\noindent
+Con h=5
+
+$$
+\begin{aligned}
+\gamma(t,t-5)&=0
+\end{aligned}
+$$
+
+\noindent
+Con h $\geq 5$ es 0
+
+\begin{verbatim}
+acf <- c(1,0.43,0.65,0.23,0.15,0)
+\end{verbatim}
+
+
+```{r,fig.width=8, fig.height=4}
+acf <- c(1,0.43,0.65,0.23,0.15,0)
+barplot(acf,las=1,names.arg =1:6,main = "ACF teórico", col = '#FFA07A')
+```
+
+
+
+\noindent
+\textbf{PACF}
+
+\begin{verbatim}
+acf_ma1<-c(0.43,0.65,0.23,0.15,0)
+pacf_ma1<-vector()
+pacf_ma1[1]<-acf_ma1[1]
+for (i in 2:5){
+  deno<-toeplitz(c(1,acf_ma1[1:(i-1)]))
+  aux_1<-deno
+  aux_1[,i]<-acf_ma1[1:i]
+  nume<-aux_1
+  pacf_ma1[i]<-det(nume)/det(deno)}
+\end{verbatim}
+
+```{r,fig.width=8, fig.height=4}
+acf_ma1<-c(0.43,0.65,0.23,0.15,0)
+pacf_ma1<-vector()
+pacf_ma1[1]<-acf_ma1[1]
+for (i in 2:5){
+  deno<-toeplitz(c(1,acf_ma1[1:(i-1)]))
+  aux_1<-deno
+  aux_1[,i]<-acf_ma1[1:i]
+  nume<-aux_1
+  pacf_ma1[i]<-det(nume)/det(deno)}
+barplot(pacf_ma1,las=1,names.arg =1:length(pacf_ma1), main = "PACF teórico", col = '#FFA07A')
+```
+
+
+\noindent
+\textbf{c.} Simule y grafique una realización del proceso estocástico X t de tamaño 200, dando los valores que usted considere apropiados a cada uno de los parámetros.
+
+\begin{verbatim}
+sigma_w <- 4.8
+wt <- rnorm(204,0,sigma_w)
+xt <- vector()
+for (t in 3:203) {
+  xt[t] <- wt[t-2] + 0.5*wt[t-1] + 2*wt[t] + 0.5*wt[t+1] + wt[t+2]
+}
+xt <- xt[3:202]
+yt <- data.frame(xt)
+yt$num <- 1:200
+\end{verbatim}
+
+
+```{r, message=FALSE,fig.width=8, fig.height=4}
+set.seed(123)
+sigma_w <- 4.8
+wt <- rnorm(204,0,sigma_w)
+xt <- vector()
+
+for (t in 3:203) {
+  xt[t] <- wt[t-2] + 0.5*wt[t-1] + 2*wt[t] + 0.5*wt[t+1] + wt[t+2]
+}
+
+xt <- xt[3:202]
+
+yt <- data.frame(xt)
+
+yt$num <- 1:200
+
+ggplot(yt,aes(num,xt))+
+  geom_line()+
+  geom_smooth(method='lm')
+```
+
+
+\noindent
+\textbf{d.} Obtenga y grafique la ACF y la PACF muestral de la realización obtenida en (c) y comparela con las gráficas obtenidas en (b). ¿Qué observa?
+
+```{r}
+xt_acf <- acf(xt,lag.max = 6,plot = F)
+xt_pacf <- pacf(xt,lag.max = 6,plot = F)
+
+par(mfrow=c(2,2))
+
+plot(xt_acf,main = "ACF muestral")
+barplot(acf,las=1,names.arg =1:6,main = "ACF teórico", col = '#FFA07A')
+plot(xt_pacf,main = "PACF muestral")
+barplot(pacf_ma1,las=1,names.arg =1:5,main = "PACF teórico", col = '#FFA07A')
+```
+
+
+\noindent
+Se observa que la ACF y la PACF teoricas se comportan de igual forma que la ACF y PACF muestrales, es decir que los valores calculados de manera teorica son iguales a los calculados por la simulación para las muestrales.
+
+
+\section{Segundo punto.}
+
+$$
+X_{t} =3.1+0.9X_{t-1}-0.6X_{t-2}+W_{t}
+$$
+
+\noindent
+Donde los $W_{t}$ es un ruido blanco Gaussiano con $\textbf{E}[W_t]=0$ y varianza $\sigma^2_w=6.2$
+
+
+\noindent
+\textbf{a.} Encuentre la media del proceso.
+
+$$
+\begin{aligned}
+\textbf{E}[X_t] &= \textbf{E}[3.1+0.9X_{t-1}-0.6X_{t-2}+W_{t}]\\
+\textbf{E}[X_t] &= \textbf{E}[3.1]+0.9\textbf{E}[X_{t-1}]-0.6\textbf{E}[X_{t-2}]+\textbf{E}[W_{t}]\\
+\mu &= 3.1+0.9\mu-0.6\mu+0\\
+\mu &= 3.1+0.3\mu\\
+\mu-0.3\mu &= 3.1\\
+\mu &= 3.1/0.7\\
+\mu &= 4.428571429
+\end{aligned}
+$$
+
+\noindent
+\textbf{b.} Encuentre la varianza del proceso.
+
+$$
+\begin{aligned}
+Var[X_{t}]&=Cov[X_{t},X_{t}]=Cov[X_{t},3.1+0.9X_{t-1}-0.6X_{t-2}+W_{t}]\\
+&= Cov[X_{t}, 3.1]+0.9Cov[X_{t},X_{t-1}]-0.6Cov[X_{t},X_{t-2}]+Cov[X_{t},W_{t}]\\
+&= 0+0.9\gamma(1)-0.6\gamma(2)+Cov[X_{t},W_{t}]\\
+&= 0.9+\gamma(1)-0.6\gamma(2)+Cov[3.1+0.9X_{t-1}-0.6X_{t-2}+W_{t},W_{t}]\\
+&= 0.9\gamma(1)-0.6\gamma(2)+Cov[W_{t},W_{t}]\\
+&= 0.9\gamma(1)-0.6\gamma(2)+\sigma^2_w\\
+&= 0.9\gamma(1)-0.6\gamma(2)+6.2
+\end{aligned}
+$$
+
+\noindent
+\textbf{c.} Encuentre y grafique las funciones de autocorrelación (ACF) y autocorrelación parcial (PACF) para 20 lags.
+
+
+\noindent
+\textbf{ACF}
+
+
+\begin{verbatim}
+acf <- ARMAacf(ar = c(0.9,-0.6),lag.max = 20)
+\end{verbatim}
+
+```{r}
+acf <- ARMAacf(ar = c(0.9,-0.6),lag.max = 20)
+```
+
+```{r, ,fig.width=8, fig.height=4}
+barplot(acf,main = "ACF teórico", col = '#54FF9F')
+```
+
+\noindent
+\textbf{PACF}
+
+
+\begin{verbatim}
+pacf <- ARMAacf(ar = c(0.9,-0.6),lag.max = 20,pacf = TRUE)
+\end{verbatim}
+
+```{r}
+pacf <- ARMAacf(ar = c(0.9,-0.6),lag.max = 20,pacf = TRUE)
+```
+
+```{r,fig.width=8, fig.height=4}
+barplot(pacf,main = "PACF teórico", col = '#54FF9F')
+```
+
+
+\noindent
+\textbf{d.} Simule y grafique una realización del proceso estocástico de tamaño 180. Obtenga y grafique la ACF y la PACF muestral de esta realización y comparela con las gráficas obtenidas en (c). ¿Qué observa?
+
+
+\begin{verbatim}
+sim <- arima.sim(model = list(ar=c(0.9,-0.6)),n=180,sd=6.2)
+\end{verbatim}
+
+
+```{r,fig.width=8, fig.height=4}
+sim <- arima.sim(model = list(ar=c(0.9,-0.6)),n=180,sd=6.2)
+plot(sim,type="l")
+```
+
+```{r}
+par(mfrow=c(2,2))
+
+barplot(acf,main = "ACF teórico", col = '#54FF9F')
+acf(sim,main = "ACF muestral")
+barplot(pacf,main = "PACF teórico", col = '#54FF9F')
+pacf(sim,main = "PACF muestral")
+```
+
+\noindent
+Se observa que la ACF y la PACF teoricas se comportan de igual forma que la ACF y PACF muestrales, es decir que los valores calculados de manera teorica son iguales a los calculados por la simulación para las muestrales.
+
+
+\section{Tercer punto.}
+
+
+```{r lectura}
+#Lectura bases de datos.
+b_2019 <- read_xlsx("2019.xlsx")
+b_2020 <- read_xlsx("2020.xlsx")
+b_2021 <- read_xlsx("2021.xlsx")
+```
+
+
+\noindent
+\textbf{a.} Lea cuidadosamente en RStudio las 3 bases de datos verificando que no aparezca ningún error o advertencia. ¿Cuáles son las dimensiones de cada data frame?
+
+\noindent
+Cada data frame tiene respectivamente:
+
+
+\noindent
+BD_2019 - 3563 observaciones de 23 variables
+
+\noindent
+BD_2020 - 3764 observaciones de 23 variables
+
+\noindent
+BD_2021 - 4122 observaciones de 23 variables
+
+
+
+\noindent
+\textbf{b.} Una las tres bases de datos en un solo data frame. Nombrelo “datos_juntos”. ¿Cuáles son las dimensiones del data frame?
+
+
+```{r, warning=FALSE}
+# renombrando columnas
+colnames(b_2019)[3:23] <- 4:23
+colnames(b_2020)[3:23] <- 4:23
+colnames(b_2021)[3:23] <- 4:23
+
+datos_juntos <- rbind(b_2019,b_2020,b_2021)
+```
+
+\noindent
+Las dimensiones del data frame datos_juntos son de 11449 observaciones de 23 variables
+
+
+\noindent
+\textbf{c.} Con base en el dataframe del item (b) elabore otro data frame que contenga las variables (columnas): fecha, hora, día, día de la semana (lunes, martes, . . . ), semana, mes, año, número de pasajeros por hora, total de pasajeros por día, línea del metro. ¿Cuáles son las dimensiones del data frame?
+
+```{r}
+datos_juntos$Día <- as.Date(datos_juntos$Día,format = "%Y-%m-%d") # Convirtiendo las fechas en formato date
+
+base <- data.frame()
+base <- gather(datos_juntos,key="Hora",value = "pasajeros",3:22)
+base$dia <- format(as.Date(base$Día,format="%Y-%m-%d"), format = "%d")
+base$dia_semana <- wday(base$Día,label = TRUE, abbr=FALSE)
+colnames(base)[1] <- c("fecha")
+base$semana <- week(base$fecha)
+base$mes<-month(base$fecha)
+base$anio<-year(base$fecha)
+#dim(base)
+```
+
+\noindent
+Las dimensiones del data frame son de 228980 observaciones de 10 variables
+
+
+\noindent
+\textbf{d.} Elabore dos data frames: uno con datos de la línea A (nombrelo “dat_lin_A”) y otro con datos de la línea B (nombrelo “dat_lin_B”). Ordene los dos data frames de acuerdo a la fecha y hora. ¿Cuáles son las dimensiones de cada data frame?
+
+
+```{r}
+l1 <- rbind(which(base$`Línea de servicio`=="LÍNEA A")) # Seleccionando los nombres diferentes a Linea A
+
+
+l2 <- rbind(which(base$`Línea de servicio`=="LÍNEA B"))# Seleccionando los nombres diferentes a Linea B
+
+base$`Línea de servicio`[l1] <- "Línea A" # Cambiando los nombres para que queden igual
+base$`Línea de servicio`[l2] <- "Línea B" # Cambiando los nombres para que queden igual
+
+#table(base$`Línea de servicio`)
+
+dat_A <- which(base$`Línea de servicio`=="Línea A")
+dat_lin_A <- base[dat_A,] # Seleccionando solo los Linea A
+
+
+dat_B <- which(base$`Línea de servicio`=="Línea B")
+dat_lin_B <- base[dat_B,] # Seleccionando solo los Linea B
+```
+
+
+\noindent
+Cada data frame tiene respectivamente:
+
+
+\noindent
+dat_lin_A - 21860 observaciones de 10 variables
+
+\noindent
+dat_lin_B - 21860 observaciones de 10 variables
+
+
+\noindent
+\textbf{e.} Para cada línea (A y B), calcule el promedio de pasajeros por hora los lunes, los martes, los miércoles, los jueves, los viernes, los sábados y los domingos antes del 23 de marzo de 2020 (¿qué pasó en esta fecha?) y luego del 23 de marzo de 2020. ¿Qué observa? Incluya gráficos y/o tablas que ayuden a argumentar sus observaciones y comentarios.
+
+```{r}
+mar_23 <- which(dat_lin_A$fecha=="2020-03-23") # Marzo 23
+jan_1 <- which(dat_lin_A$fecha=="2019-01-01") # 1 de enero
+dic_31 <- which(dat_lin_A$fecha=="2021-12-01") # 31 de diciembre
+
+intervalos <- cbind(jan_1,mar_23,dic_31)
+
+antes <- list() ## Fechas antes del 23 de marzo 
+
+for (i in 1:nrow(intervalos)) {
+  antes[[i]] <- dat_lin_A[intervalos[i,1]:intervalos[i,2],]
+}
+
+vacios <- list()
+for (i in 1:20) { ## Buscando NA antes del 23 de marzo
+  vacios[[i]] <- which(is.na(antes[[i]]$pasajeros))
+}
+
+medias_antes <- data.frame(matrix(NA, nrow = 20, ncol = 7))
+colnames(medias_antes) <- c("lunes","martes","miercoles","jueves","viernes","sabado","domingo")
+
+for (i in 1:20) {
+    
+  lunes <- which(antes[[i]]$dia_semana=="lunes") # ubicaciones día Lunes
+  pasajeros_lunes <- antes[[i]]$pasajeros[lunes] # Pasajeros el día lunes
+  pasajeros_lunes <- pasajeros_lunes[!is.na(pasajeros_lunes)] #eliminando NA
+  medias_antes$lunes[i] <- mean(pasajeros_lunes) # Media de los días lunes
+  
+  martes <- which(antes[[i]]$dia_semana=="martes") 
+  pasajeros_martes <- antes[[i]]$pasajeros[martes] 
+  pasajeros_martes <- pasajeros_martes[!is.na(pasajeros_martes)] 
+  medias_antes$martes[i] <- mean(pasajeros_martes) 
+    
+  miercoles <- which(antes[[i]]$dia_semana=="miércoles") 
+  pasajeros_miercoles <- antes[[i]]$pasajeros[miercoles] 
+  pasajeros_miercoles <- pasajeros_miercoles[!is.na(pasajeros_miercoles)] 
+  medias_antes$miercoles[i] <- mean(pasajeros_miercoles) 
+
+  jueves <- which(antes[[i]]$dia_semana=="jueves") 
+  pasajeros_jueves <- antes[[i]]$pasajeros[jueves] 
+  pasajeros_jueves <- pasajeros_jueves[!is.na(pasajeros_jueves)] 
+  medias_antes$jueves[i] <- mean(pasajeros_jueves) 
+  
+  viernes <- which(antes[[i]]$dia_semana=="viernes") 
+  pasajeros_viernes <- antes[[i]]$pasajeros[viernes] 
+  pasajeros_viernes <- pasajeros_viernes[!is.na(pasajeros_viernes)] 
+  medias_antes$viernes[i] <- mean(pasajeros_viernes) 
+  
+  sabado <- which(antes[[i]]$dia_semana=="sábado") 
+  pasajeros_sabado <- antes[[i]]$pasajeros[sabado] 
+  pasajeros_sabado <- pasajeros_sabado[!is.na(pasajeros_sabado)] 
+  medias_antes$sabado[i] <- mean(pasajeros_sabado) 
+  
+  domingo <- which(antes[[i]]$dia_semana=="domingo") 
+  pasajeros_domingo <- antes[[i]]$pasajeros[domingo] 
+  pasajeros_domingo <- pasajeros_domingo[!is.na(pasajeros_domingo)] 
+  medias_antes$domingo[i] <- mean(pasajeros_domingo) 
+  
+}
+
+### PARA DESPUÉS  
+
+
+despues <- list() ## Fechas antes del 23 de marzo 
+
+for (i in 1:nrow(intervalos)) {
+  despues[[i]] <- dat_lin_A[intervalos[i,2]:intervalos[i,3],]
+}
+
+medias_despues <- data.frame(matrix(NA, nrow = 20, ncol = 7))
+colnames(medias_despues) <- c("lunes","martes","miercoles","jueves","viernes","sabado","domingo")
+
+for (i in 1:20) {
+    
+  lunes <- which(despues[[i]]$dia_semana=="lunes") # ubicaciones día Lunes
+  pasajeros_lunes <- despues[[i]]$pasajeros[lunes] # Pasajeros el día lunes
+  pasajeros_lunes <- pasajeros_lunes[!is.na(pasajeros_lunes)] #eliminando NA
+  medias_despues$lunes[i] <- mean(pasajeros_lunes) # Media de los días lunes
+  
+  martes <- which(despues[[i]]$dia_semana=="martes") 
+  pasajeros_martes <- despues[[i]]$pasajeros[martes] 
+  pasajeros_martes <- pasajeros_martes[!is.na(pasajeros_martes)] 
+  medias_despues$martes[i] <- mean(pasajeros_martes) 
+    
+  miercoles <- which(despues[[i]]$dia_semana=="miércoles") 
+  pasajeros_miercoles <- despues[[i]]$pasajeros[miercoles] 
+  pasajeros_miercoles <- pasajeros_miercoles[!is.na(pasajeros_miercoles)] 
+  medias_despues$miercoles[i] <- mean(pasajeros_miercoles) 
+
+  jueves <- which(despues[[i]]$dia_semana=="jueves") 
+  pasajeros_jueves <- despues[[i]]$pasajeros[jueves] 
+  pasajeros_jueves <- pasajeros_jueves[!is.na(pasajeros_jueves)] 
+  medias_despues$jueves[i] <- mean(pasajeros_jueves) 
+  
+  viernes <- which(despues[[i]]$dia_semana=="viernes") 
+  pasajeros_viernes <- despues[[i]]$pasajeros[viernes] 
+  pasajeros_viernes <- pasajeros_viernes[!is.na(pasajeros_viernes)] 
+  medias_despues$viernes[i] <- mean(pasajeros_viernes) 
+  
+  sabado <- which(despues[[i]]$dia_semana=="sábado") 
+  pasajeros_sabado <- despues[[i]]$pasajeros[sabado] 
+  pasajeros_sabado <- pasajeros_sabado[!is.na(pasajeros_sabado)] 
+  medias_despues$sabado[i] <- mean(pasajeros_sabado) 
+  
+  domingo <- which(despues[[i]]$dia_semana=="domingo") 
+  pasajeros_domingo <- despues[[i]]$pasajeros[domingo] 
+  pasajeros_domingo <- pasajeros_domingo[!is.na(pasajeros_domingo)] 
+  medias_despues$domingo[i] <- mean(pasajeros_domingo) 
+}
+```
+
+```{r}
+medias_antes$hora <- 4:23
+
+medias_antes <- medias_antes[,c(8,1,2,3,4,5,6,7)]
+
+medias_despues$hora <- 4:23
+
+medias_despues <- medias_despues[,c(8,1,2,3,4,5,6,7)]
+```
+
+```{r}
+medias_antes %>% head() %>% kbl(caption = "Tabla de promedio por hora antes del 23 de marzo del 2020" ) %>%  kable_styling(full_width = F,latex_options = "HOLD_position") %>% kable_minimal() 
+```
+
+
+\noindent
+El 23 de marzo del 2020 el ministro de Salud y Protección Social, Fernando Ruiz Gómez, reiteró a los colombianos la importancia del cumplimiento del aislamiento preventivo obligatorio para el control de la COVID–19 durante la emisión de un nuevo especial televisivo "Prevención y acción del coronavirus" con el expresidente de la República, Iván Duque Márquez, y algunos ministros del gabinete.
+
+
+```{r}
+medias_despues %>% head() %>% kbl(caption = "Tabla de promedio por hora despues del 23 de marzo del 2020" ) %>%  kable_styling(full_width = F,latex_options = "HOLD_position") %>% kable_minimal() 
+```
+
+
+\noindent
+A partir de las medidas tomadas por el gobierno nacional, entre esas la cuarentena, la afluencia de pasajeros del sistema de metro en la linea A y B disminuyo de manera drástica.   
+
+
+```{r, message=FALSE, warning=FALSE, fig.width=8, fig.height=4}
+tabla_medias <- data.frame(matrix(NA,nrow = 2,ncol = 7))
+colnames(tabla_medias) <- c("lunes","martes","miercoles","jueves","viernes","sabado","domingo")
+rownames(tabla_medias) <- c("Antes", "Después")
+  
+tabla_medias[1,1] <- mean(medias_antes$lunes) ## Tabla con las medias de los días
+tabla_medias[2,1] <- mean(medias_despues$lunes)
+
+tabla_medias[1,2] <- mean(medias_antes$martes)
+tabla_medias[2,2] <- mean(medias_despues$martes)
+
+tabla_medias[1,3] <- mean(medias_antes$miercoles)
+tabla_medias[2,3] <- mean(medias_despues$miercoles)
+
+tabla_medias[1,4] <- mean(medias_antes$jueves)
+tabla_medias[2,4] <- mean(medias_despues$jueves)
+
+tabla_medias[1,5] <- mean(medias_antes$viernes)
+tabla_medias[2,5] <- mean(medias_despues$viernes)
+
+tabla_medias[1,6] <- mean(medias_antes$sabado)
+tabla_medias[2,6] <- mean(medias_despues$sabado)
+
+tabla_medias[1,7] <- mean(medias_antes$domingo)
+tabla_medias[2,7] <- mean(medias_despues$domingo)
+
+library(kableExtra)
+
+tabla_medias %>% kbl(caption = "Tabla de promedio por día de la semana" ) %>%  kable_styling(full_width = F,latex_options = "HOLD_position") %>% kable_minimal() 
+
+
+library(reshape2)
+
+tabla<- data.frame(t(tabla_medias))
+tabla$dia <- 1:7
+
+
+ggplot()+
+  geom_line(data=tabla,aes(y=Antes,x= dia,colour="Antes"),size=1 )+
+  geom_line(data=tabla,aes(y=Después,x= dia,colour="Después"),size=1) +
+  scale_color_manual(name="", values = c("Antes" = "darkblue", "Después" = "red"))+
+  labs(title="Comparación entre antes y después del 23 de marzo",x="Día de la semana",y="Promedio de pasajeros")
+
+
+# Como se puede notar, hay una gran diferencia entre antes y después de la cantidad de pasajeros totales por día.
+
+
+tabla_reduccion <- vector()
+
+for (i in 1:7) {
+  tabla_reduccion[i] <- (tabla$Después[i]*100/tabla$Antes)
+}
+
+kable(t(tabla_reduccion),caption = "Diferencia de pasajeros en porcentaje por dia después del 23 de marzo" ) %>%  kable_styling(full_width = F,latex_options = "HOLD_position") %>% kable_minimal() 
+```
+
+\noindent
+Se puede ver que hubo una diferencia de pasajeros de hasta un 59% después de que la pandemia empezara, esto se ratifica al analizar el grafico del antes y el despues donde la linea roja que representa el despues se encuentra muy abajo comprandola con la linea azul que es antes del 23 de marzo del 2020.
+
+
+\noindent
+\textbf{f.} Obtenga dos nuevos data frames (uno para la línea A y otro para la línea B) que resuman el número total de pasajeros por día, que contengas las variables: fecha, día, día de la semana, semana, mes, año y el total de pasajeros por día.
+
+```{r}
+linea_A <- dat_lin_A[1:1093,]
+colnames(linea_A)[3]="Total_Pasajeros"
+linea_A <- linea_A[,c(1,3,6,7,8,9,10)]
+
+mensual_A <- linea_A[1:31,]
+
+linea_B <- dat_lin_B[1:1093,]
+colnames(linea_B)[3]="Total_Pasajeros"
+linea_B <- linea_B[,c(1,3,6,7,8,9,10)]
+
+mensual_B <- linea_B[1:31,]
+```
+
+\noindent
+Cada data frame tiene respectivamente:
+
+
+\noindent
+line_A - 1093 observaciones de 7 variables
+
+\noindent
+linea_B - 1093 observaciones de 7 variables
+
+
+\noindent
+\textbf{g.} Para cada data frame del item (f) grafique las series del total de pasajeros por día a lo largo del tiempo. ¿Qué observa? Incluya gráficos y/o tablas que ayuden a argumentar sus observaciones y comentarios.
+
+
+```{r, fig.width=8, fig.height=4}
+ggplot(mensual_A,aes(x = fecha,y = Total_Pasajeros))+
+  geom_line()+
+  labs(title="Serie de tiempo para el total de pasajeros para un mes en la Línea A",x="Fecha",y="Total de pasajeros")
+```
+\noindent
+Al observar la serie de tiempo para el total de pasajeros en la linea A para un mes se puede evidenciar un comportamiento ciclico. Cada domingo se observa que la afluencia de pasajeros es menor al compararla con el resto de los dias de la semana, esto se aprecia en esos picos de caida que se observan en la serie.
+
+```{r, fig.width=8, fig.height=4}
+ggplot(linea_A,aes(x = fecha,y = Total_Pasajeros))+
+  geom_line()+
+  labs(title="Serie de tiempo para el total de pasajeros en la Línea A",x="Fecha",y="Total de pasajeros")
+```
+
+\noindent
+Al graficar la serie de tiempo completa para el total de pasajeros en la linea A se puede apreciar que hasta antes del 23 de marzo del 2020 la serie tenia un comportamiento estacionario con una media aproximada de 500.000 pasajeros, algo interesante es que el 17 y 18 de febrero del 2020 hubo una cifra record en la cantidad de pasajeros en la linea A, ya despues del 23 de marzo del 2020, se puede apreciar que la serie tiene una tendencia creciente, esto debido al retorno a la normalidad en el sistema de metro.
+
+
+```{r, fig.width=8, fig.height=4}
+ggplot(mensual_B,aes(x = fecha,y = Total_Pasajeros))+
+  geom_line()+
+  labs(title="Serie de tiempo para el total de pasajeros para un mes en la Línea B",x="Fecha",y="Total de pasajeros")
+```
+
+\noindent
+Al observar la serie de tiempo para el total de pasajeros en la linea B para un mes, se ve que su comportamiento es similar al de la linea A, presentando un comportamiento ciclico; la principal diferencia entre las dos lineas del metro, es la afluencia de pasajeros en cada una.
+
+```{r, fig.width=8, fig.height=4}
+ggplot(linea_B,aes(x = fecha,y = Total_Pasajeros))+
+  geom_line()+
+  labs(title="Serie de tiempo para el total de pasajeros en la Línea B",x="Fecha",y="Total de pasajeros")
+```
+
+\noindent
+Al graficar la serie de tiempo completa para el total de pasajeros en la linea B se aprecia que su comportamiento es similar al de la linea A, solo que aqui la media aproximada de pasajeros es de 55000 antes del 23 de marzo, además presenta los mismos picos record en la afluencia de pasajeros y el cambio abrupto antes y despues del 23 de marzo del 2020.
+
+
+\noindent
+\textbf{h.} Divida cada uno de los dos data frames obtenidos en el item (f) en antes y después del 23 de marzo de 2020. Gráfique y contaste ambos conjuntos para cada línea. ¿Observa algún comportamiento estacional o tendencia? Argumente con gráficos explicando cada uno.
+
+
+```{r, fig.width=8, fig.height=4, message=FALSE}
+linea_A_antes <- linea_A[1:448,]
+linea_A_despues <- linea_A[448:nrow(linea_A),]
+
+
+linea_B_antes <- linea_B[1:448,]
+linea_B_despues <- linea_B[448:nrow(linea_B),]
+
+par(mfrow=c(1,2))
+plot(x=linea_A_antes$fecha,y = linea_A_antes$Total_Pasajeros,type="l",xlab = "Fecha",ylab = "Total Pasajeros",main = "Línea A Antes")
+plot(x=linea_A_despues$fecha,y = linea_A_despues$Total_Pasajeros,type="l",xlab = "Fecha",ylab = "Total Pasajeros",main = "Línea A Después")
+
+
+par(mfrow=c(1,2))
+plot(x=linea_B_antes$fecha,y = linea_B_antes$Total_Pasajeros,type="l",xlab = "Fecha",ylab = "Total Pasajeros",main = "Línea B Antes")
+plot(x=linea_B_despues$fecha,y = linea_B_despues$Total_Pasajeros,type="l",xlab = "Fecha",ylab = "Total Pasajeros",main = "Línea B Después")
+```
+
+\noindent
+Como tanto la linea A como la linea B se comportan de manera similar podemos concluir que, tanto para la linea A como para la linea B antes del 23 de marzo del 2020 presentan ambas series un comportamiento estacionario esto se ve en los ciclos que se observan en el grafico, además que cada una oscila alrededor de una media, en el caso de la linea A $500.000$ y en el caso de la linea B $55000$.
+
+\noindent
+Ahora respecto a ambas series de tiempo pero ya observadas despues del 23 de marzo del 2020 se ve una clara tendencia lineal creciente, esto puede deberse a la normalización en el servicio de metro durante y despues de la pandemia.
+
+
+\noindent
+\textbf{i.} Usando la función “lm” del RStudio, ajuste un modelo para los datos antes y otro para los datos después en cada línea que explique el número de pasajeros. Argumente por qué selecciona cada covariable y explique los resultados del “summary” de cada uno de los cuatro modelos contrastando los resultados del antes y el después en cada línea.
+
+
+\noindent
+\textbf{Modelos para linea A y B ANTES del 23 de marzo del 2020}
+
+
+\noindent
+Las covariables seleccionadas para la linea A y B fueron: dia de la semana y mes; el dia de la semana fue seleccionado ya que hay dias puntuales en que cambia de manera constante la cantidad de pasajeros en el metro, por ejemplo de lunes a viernes hay más pasajeros debido a que son dias laborales, en cambio los sabados y los domingo que son dias de descanso es menor la cantidad de personas; el mes tambien se selecciono debido a que se sabe que por ejemplo en el mes de dciembre aumentan los visitantes en la ciudad de Medellin, lo mismo en meses como abril que se encuentra la semana santa y la gente viaja a pasear por medellín, esto hace que la afluencia de personas en el servicio del metro sea mayor, cabe resaltar que todo este comportamiento fue antes de la pandemia y asi como se observo en puntos anteriores esta epoca tenia un comportamiento estacionario en la serie.
+
+
+```{r}
+linea_A_antes$dia_semana <- as.factor(linea_A_antes$dia_semana)
+linea_A_antes$mes <- as.factor(linea_A_antes$mes)
+
+mod_A_antes <- lm(Total_Pasajeros ~ dia_semana + mes, data = linea_A_antes)
+
+summary(mod_A_antes)
+
+linea_B_antes$dia_semana <- as.factor(linea_B_antes$dia_semana)
+linea_B_antes$mes <- as.factor(linea_B_antes$mes)
+
+mod_B_antes <- lm(Total_Pasajeros ~ dia_semana + mes, data = linea_B_antes)
+
+summary(mod_B_antes)
+```
+
+\noindent
+Respecto al summary del modelo para la linea A y B si se obseva el valor del $R^2$ ajustado podemos interpretar que el 60.33\% (Linea A) y el 56.46\% (Linea B) de la variación del número de pasajeros (total de pasajeros) se explica por la variación en el porcentaje de las variables explicativas (dia de la semana, mes), el resto de la varianza puede atribuirse al azar o a otras variables que no se incorporaron en el modelo, además si se observa el p-valor de ambos modelos con una confianza del 95% se ve que el p-valor $< 0.05$ siendo asi un modelo significativo.
+
+
+\noindent
+\textbf{Modelos para linea A y B DESPUES del 23 de marzo del 2020}
+
+\noindent
+Las covariables seleccionadas para la linea A y B fueron: fecha, dia de la semana y mes; la fecha fue seleccionada ya que hay fechas especificas donde la afluencia de personas es mayor o menor por ejemplo elecciones de votación popular en general, conciertos, partidos de futbol, etc..., pero primordialmente teniendo en cuenta que fue despues del 20 de marzo la fecha resulta ser importante ya que a medida que iba avanzando la vacunación, tratamientos e iban saliendo decretos para volver a la normalidad habian fechas especificas que influirian en la afluencia de pasajeros, como cuando se empezo a vacunar a los mayores de 18 años, o cuando fue el dia sin iba para incentivar los comercios en esa epoca de pandemia; el dia de la semana fue seleccionado ya que hay dias puntuales en que cambia de manera constante la cantidad de pasajeros en el metro, por ejemplo de lunes a viernes hay más pasajeros debido a que son dias laborales, en cambio los sabados y los domingo que son dias de descanso es menor la cantidad de personas, el mes tambien se selecciono debido a que se sabe que por ejemplo en el mes de dciembre aumentan los visitantes en la ciudad de Medellin, lo mismo en meses como abril que se encuentra la semana santa y la gente viaja a pasear por medellín, esto hace que la afluencia de personas en el servicio del metro sea mayor.
+
+
+```{r}
+linea_A_despues$dia_semana <- as.factor(linea_A_despues$dia_semana)
+linea_A_despues$mes <- as.factor(linea_A_despues$mes)
+
+mod_A_despues <- lm(Total_Pasajeros ~ fecha + dia_semana + mes, data = linea_A_despues)
+
+summary(mod_A_despues)
+
+linea_B_despues$dia_semana <- as.factor(linea_B_despues$dia_semana)
+linea_B_despues$mes <- as.factor(linea_B_despues$mes)
+
+mod_B_despues <- lm(Total_Pasajeros ~ fecha + dia_semana + mes, data = linea_B_despues)
+
+summary(mod_B_despues)
+```
+
+\noindent
+Respecto al summary del modelo para la linea A y B si se obseva el valor del $R^2$ ajustado podemos interpretar que el 80.15\% (Linea A) y el 81.59\% (Linea B) de la variación del número de pasajeros (total de pasajeros) se explica por la variación en el porcentaje de las variables explicativas (fecha, dia de la semana, mes), el resto de la varianza puede atribuirse al azar o a otras variables que no se incorporaron en el modelo; además si se observa el p-valor de ambos modelos con una confianza del 95% se ve que el p-valor $< 0.05$ siendo asi un modelo significativo.
+
+
+\section{Anexos.}
+
+\noindent
+En el siguiente link se encuentra todo el trabajo y los codigos empleados para su solución:
+
+
+
